@@ -1,16 +1,13 @@
 #script um server requests zu handlen
 
-import sys
-from flask import Flask, jsonify, request
-import requests
-import urllib, json
-import base64
 import os
-from flask import Flask, request, redirect, url_for
-from werkzeug.utils import secure_filename
+
+from flask import Flask, request, redirect
+from flask import jsonify
 from flask import send_from_directory
+from werkzeug.utils import secure_filename
 
-
+from detection import *;
 
 UPLOAD_FOLDER = 'tmp'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
@@ -39,8 +36,9 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
+            return json.dumps(detect(filename, False))
+            #return redirect(url_for('uploaded_file',
+            #                        filename=filename))
     return '''
     <!doctype html>
     <title>Upload new File</title>
