@@ -8,3 +8,4 @@ wasKochen/__pycache__/
 wasKochen/.idea
 *.db
 .idea/*
+tmp/*
