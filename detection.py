@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 
 def detect(filename, debug):
 
-    img1 = cv2.imread('template_scaled.jpg',0)          # queryImage
+    img1 = cv2.imread('template.jpg',0)          # queryImage
     img2 = cv2.imread(filename,0) # trainImage
 
     # Initiate SIFT detector
@@ -60,40 +60,50 @@ def detect(filename, debug):
 
         #img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
         #img1Aff = cv2.warpAffine(img1, M[0:2], (640, 853))
-        img2Aff = cv2.warpAffine(img2, Minv[0:2], (500,217))
+        img2Aff = cv2.warpAffine(img2, Minv[0:2], (600,270))
+
+        #if debug:
+        #    plt.imshow(img1, 'gray'),plt.show()
+
         #print(img1Aff)
         #img2np = np.array(img2)
         #img1Affnp = np.array(img2Aff)
         #test = np.where(img1Affnp != 0)
         #print(test)
+        imgt = img1
 
-        img1 = cv2.blur(img1,(49,49))
+        img1 = cv2.blur(img1,(35,35))
 
         pts2 = []
         for i in range(len(img1)):
             for j in range(len(img1[i])):
-                if img1[i][j] < 140 or img2Aff[i][j] > 100 or j <50 or j>450:
+                if img1[i][j] < 220 or img2Aff[i][j] > 100: # or j <50 or j>550:
                     img2Aff[i][j] = 255
                 else:
                     img2Aff[i][j] = 0
                     pts2.append([j,i])
-        #plt.imshow(img1, 'gray'),plt.show()
-        print(pts2)
+                #if imgt[i][j] < 100:
+                #    img2Aff[i][j] = 20
+
+        if debug:
+            plt.imshow(img2Aff, 'gray'),plt.show()
+        #print(pts2)
         pts2 = np.float32(pts2).reshape(-1,1,2)
         #pts2 = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
-        print(pts2)
+        #print(pts2)
         dst2 = cv2.perspectiveTransform(pts2,M)
 
         #print(dst2)
 
         json_out = []
         for t in dst2:
-            print(t)
+            #print(t)
             y = int(t[0][0])
             x = int(t[0][1])
             if x<len(img2) and y<len(img2[0]) and x>=0 and y>=0:
                 img2[x][y] = 255
                 json_out.append([x,y])
+        #if debug:
         #plt.imshow(img1Aff, 'gray'), plt.show()
         #print(json.dumps(json_out))
         #plt.imshow(img2, 'gray'), plt.show()

@@ -1,3 +1,3 @@
 from detection import *;
 
-detect("scene.jpg", True)
+detect("scene_scaled.jpg", True)
