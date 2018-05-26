@@ -58,19 +58,19 @@ def uploaded_file(filename):
 
 @app.route("/api", methods=["POST"])
 def main():
-    try:
-        f="tmp/xxx."+request.form['ext']
-        out_file = open(f, "wb")  # open for [w]riting as [b]inary
-        out_file.write(base64.b64encode(request.form['file']))
-        out_file.close()
-    except Exception as e:
-        return str(e)
+    if 'file' not in request.files:
+        return "exception no file specified in request.files"
+    file = request.files['file']
+    # if user does not select file, browser also
+    # submit a empty part without filename
+    if file.filename == '':
+        return "no file name specified"
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
     return jsonify({"new_scratch":[(1,2),(3,6),(3,7)]})
 
-@app.route("/api/xxx")
-def mainxx():
-    return jsonify({"new_scratch":[(1,2),(3,6),(3,7)]})
+
 
 
 if __name__=="__main__":

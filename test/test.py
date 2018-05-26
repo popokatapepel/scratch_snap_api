@@ -7,7 +7,7 @@ in_file.close()
 files = {'file': open('test.jpg','rb')}
 values = {'DB': 'photcat', 'OUT': 'jpg', 'SHORT': 'short'}
 
-r=requests.post("http://localhost:5000/",
+r=requests.post("http://localhost:5000/api",
                 files=files,
                 data=values)
 
